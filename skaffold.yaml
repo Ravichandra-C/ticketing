@@ -1,0 +1,19 @@
+apiVersion: skaffold/v4beta9
+kind: Config
+metadata:
+  name: ticketing
+build:
+  tagPolicy:
+    gitCommit:
+      ignoreChanges: false
+  googleCloudBuild:
+    projectId: proven-dryad-412302
+  artifacts:
+    - image: gcr.io/proven-dryad-412302/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - infra/auth-depl.yaml
+    - infra/ingress-srv.yaml
