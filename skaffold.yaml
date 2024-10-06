@@ -3,17 +3,20 @@ kind: Config
 metadata:
   name: ticketing
 build:
-  tagPolicy:
-    gitCommit:
-      ignoreChanges: false
-  googleCloudBuild:
-    projectId: proven-dryad-412302
+  local:
+    push: false
   artifacts:
-    - image: gcr.io/proven-dryad-412302/auth
+    - image: racheeka/auth
       context: auth
+      docker:
+        dockerfile: Dockerfile
+    - image: racheeka/client
+      context: client
       docker:
         dockerfile: Dockerfile
 manifests:
   rawYaml:
     - infra/auth-depl.yaml
     - infra/ingress-srv.yaml
+    - infra/auth-mongo-depl.yaml
+    - infra/client-depl.yaml

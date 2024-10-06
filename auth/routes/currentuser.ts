@@ -1,12 +1,15 @@
 import express, { NextFunction, Request, Response } from "express";
-
+import jwt from "jsonwebtoken";
+import { currentUser } from "../../common/src/middlewares/current-user";
+import { requireAuth } from "../../common/src/middlewares/require-auth";
 const router = express.Router();
 
-router.post(
+router.get(
   "/api/users/current-user",
-  [],
+  currentUser,
+  requireAuth,
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send("ok");
+    res.json({ currentUser: req.currentUser || null });
   }
 );
 export { router as currentUserRouter };
