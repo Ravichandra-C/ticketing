@@ -6,7 +6,7 @@ export class NotAuthorizedError extends CustomError {
 
   constructor() {
     super();
-    Object.setPrototypeOf(this, NotAuthorizedError);
+    Object.setPrototypeOf(this, NotAuthorizedError.prototype);
   }
   serializeError(): { message: string; field?: string | undefined }[] {
     return [
