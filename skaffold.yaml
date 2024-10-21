@@ -14,9 +14,15 @@ build:
       context: client
       docker:
         dockerfile: Dockerfile
+    - image: racheeka/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
 manifests:
   rawYaml:
     - infra/auth-depl.yaml
     - infra/ingress-srv.yaml
     - infra/auth-mongo-depl.yaml
     - infra/client-depl.yaml
+    - infra/tickets-depl.yaml
+    - infra/tickets-mongo-depl.yaml
