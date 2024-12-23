@@ -18,11 +18,34 @@ build:
       context: tickets
       docker:
         dockerfile: Dockerfile
+    - image: racheeka/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+    - image: racheeka/payments
+      context: payments
+      docker:
+        dockerfile: Dockerfile
+    - image: racheeka/expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+        noCache: false
+        pullParent: false
+        squash: false
 manifests:
   rawYaml:
+    - infra/nats-depl.yaml
     - infra/auth-depl.yaml
     - infra/ingress-srv.yaml
     - infra/auth-mongo-depl.yaml
     - infra/client-depl.yaml
     - infra/tickets-depl.yaml
     - infra/tickets-mongo-depl.yaml
+    - infra/orders-depl.yaml
+    - infra/orders-mongo-depl.yaml
+    - infra/expiration-depl.yaml
+    - infra/expiration-redis-depl.yaml
+    - infra/payments-depl.yaml
+    - infra/payments-mongo-depl.yaml
+

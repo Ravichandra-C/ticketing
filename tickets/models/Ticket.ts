@@ -1,17 +1,29 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Model, Schema, Types } from "mongoose";
 
 export interface ITicket {
   title: string;
   price: number;
   userId: Types.ObjectId;
+  orderId: string;
 }
 
 export interface ITicketDocument extends Document, ITicket {
   createdAt: string;
   updatedAt: string;
+  version: number;
 }
 
-const ticketSchema = new Schema<ITicket>(
+const ticketSchema = new Schema<
+  ITicket,
+  Model<ITicket>,
+  {},
+  {},
+  {},
+  {},
+  {},
+  ITicketDocument,
+  {}
+>(
   {
     title: {
       type: String,
@@ -25,6 +37,9 @@ const ticketSchema = new Schema<ITicket>(
       type: mongoose.Schema.ObjectId,
       required: true,
     },
+    orderId: {
+      type: String,
+    },
   },
   {
     toJSON: {
@@ -34,6 +49,8 @@ const ticketSchema = new Schema<ITicket>(
         delete ret._id;
       },
     },
+    optimisticConcurrency: true,
+    versionKey: "version",
     timestamps: true,
   }
 );

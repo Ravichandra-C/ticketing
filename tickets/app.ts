@@ -6,12 +6,14 @@ import session from "cookie-session";
 import createRouter from "./routes/create";
 import getRouter from "./routes/get";
 import updateRouter from "./routes/update";
+import natsWrapper from "./nats-wrapper";
 // console.debug(process.env);
 
 if (!process.env.JWT_KEY) {
   console.log("JWT key not set");
   throw new Error("JWT_KEY is not set in env variables");
 }
+
 const app = express();
 app.use(bodyParser.json());
 app.use(
@@ -32,5 +34,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
   res.status(400).send("Bad request error");
 });
+
+process.on("SIGINT", () => natsWrapper.client.close());
+process.on("SIGTERM", () =>
+  process.on("SIGTERM", () => natsWrapper.client.close())
+);
 
 export { app };

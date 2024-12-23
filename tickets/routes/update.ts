@@ -1,4 +1,5 @@
 import {
+  BadRequestError,
   NotAuthorizedError,
   NotFoundError,
   requireAuth,
@@ -7,10 +8,12 @@ import {
 import express, { NextFunction, Request, Response } from "express";
 import Ticket from "../models/Ticket";
 import { body } from "express-validator";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+import natsWrapper from "../nats-wrapper";
 
 const updateRouter = express.Router();
 
-updateRouter.use(requireAuth);
+updateRouter.use("/", requireAuth);
 updateRouter.put(
   "/api/tickets/:id",
   [
@@ -38,6 +41,9 @@ updateRouter.put(
       if (userId !== String(ticket.userId)) {
         throw new NotAuthorizedError();
       }
+      if (ticket.orderId) {
+        throw new BadRequestError("Ticket is not editable");
+      }
       if (title) {
         ticket.title = title;
       }
@@ -45,6 +51,14 @@ updateRouter.put(
         ticket.price = price;
       }
       await ticket.save();
+      await new TicketUpdatedPublisher(natsWrapper.client).publish({
+        id: ticket.id,
+        price: ticket.price.toString(),
+        title: ticket.title,
+        userId: ticket.userId.toString(),
+        version: ticket.version,
+        orderId: ticket.orderId.toString(),
+      });
       res.send(ticket);
     } catch (err) {
       next(err);

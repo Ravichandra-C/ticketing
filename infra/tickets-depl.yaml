@@ -17,6 +17,14 @@ spec:
         image: racheeka/tickets
         imagePullPolicy: Never
         env:
+          - name: NATS_URL
+            value: http://nats-srv:4222
+          - name: NATS_CLUSTERID
+            value: ticketing
+          - name: NATS_CLIENTID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
           - name: JWT_KEY
             valueFrom: 
               secretKeyRef:
